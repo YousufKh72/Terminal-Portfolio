@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/jquery"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.terminal/js/jquery.terminal.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/jquery.terminal/css/jquery.terminal.min.css"
+    />
+  </head>
+  <body>
+    <script>
+        $(function() {
+          $('body').terminal(function(command) {
+              var cmd = $.terminal.parse_command(command);
+
+              // Define command functions
+              function hello(what) {
+                  this.echo('Hello, ' + what + '. Welcome to this terminal.');
+              }
+
+              function bye(who) {
+                  this.echo('Goodbye, ' + who + '!');
+              }
+
+              function cat(width = 400, height = 300) {
+                  // Check if dimensions are provided and valid, otherwise use defaults
+                  width = isNaN(parseInt(width)) ? 400 : parseInt(width);
+                  height = isNaN(parseInt(height)) ? 300 : parseInt(height);
+
+                  const img = $('<img>', {
+                      src: 'https://placekitten.com/' + width + '/' + height,
+                      alt: 'Custom size kitten'
+                  });
+                  this.echo(img);
+              }
+
+              // Use the switch statement to handle commands
+              switch (cmd.name.toLowerCase()) {
+                  case 'hello':
+                      hello.call(this, cmd.args.join(' '));
+                      break;
+                  case 'bye':
+                      bye.call(this, cmd.args.join(' '));
+                      break;
+                  case 'cat':
+                      // Call cat with provided arguments or use defaults if they are not provided
+                      cat.call(this, cmd.args[0], cmd.args[1]);
+                      break;
+                  default:
+                      this.echo('Command not found');
+              }
+          }, {
+              greetings: 'My First Web Terminal'
+          });
+        });
+    </script>
+  </body>
+</html>
